@@ -1,0 +1,185 @@
+{
+	"info": {
+		"_postman_id": "9a5059f1-79c2-4101-b7dd-2e572f4ddcd1",
+		"name": "Litovchenko Anastasiia Books",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50513578",
+		"_collection_link": "https://litovchenko-anastasiia25-9839063.postman.co/workspace/Anastasiia-Litovchenko's-Team's~f184d71d-790c-4e66-8afd-916fbab965fb/collection/50513578-9a5059f1-79c2-4101-b7dd-2e572f4ddcd1?action=share&source=collection_link&creator=50513578"
+	},
+	"item": [
+		{
+			"name": "BookNumber",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. код 200\r",
+							"pm.test(\"Статус-код 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// 2. сервер відповів \"OK\"\r",
+							"pm.test(\"Статус-текст OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"// 3.відповідь прийшла швидше, ніж за 2 секунди\r",
+							"pm.test(\"Швидкість відповіді менше 2с\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"// 4. конверт не порожній\r",
+							"pm.test(\"Є заголовки відповіді\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"});\r",
+							"\r",
+							"// 5. XML файл\r",
+							"pm.test(\"Тип відповіді - XML\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/xml\");\r",
+							"});\r",
+							"\r",
+							"// 6. дата відправки\r",
+							"pm.test(\"На конверті є дата\", function () {\r",
+							"    pm.response.to.have.header(\"Date\");\r",
+							"});\r",
+							"\r",
+							"// 7. результат перевірки ISBN\r",
+							"pm.test(\"Відповідь містить результат\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Result\");\r",
+							"});\r",
+							"\r",
+							"// 8. \r",
+							"pm.test(\"Є структура Envelope\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Envelope\");\r",
+							"});\r",
+							"\r",
+							"// 9. сервер не написав нам про помилку\r",
+							"pm.test(\"Немає помилок сервера\", function () {\r",
+							"    pm.expect(pm.response.text()).to.not.include(\"faultcode\");\r",
+							"});\r",
+							"\r",
+							"// довжина відповіді більше 0 символів\r",
+							"pm.test(\"Лист не порожній\", function () {\r",
+							"    pm.expect(pm.response.text().length).to.be.above(0);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <IsValidISBN10 xmlns=\"http://webservices.daehosting.com/ISBN\">\r\n      <sISBN>0747532699</sISBN>\r\n    </IsValidISBN10>\r\n  </soap:Body>\r\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://webservices.daehosting.com/services/isbnservice.wso",
+					"protocol": "http",
+					"host": [
+						"webservices",
+						"daehosting",
+						"com"
+					],
+					"path": [
+						"services",
+						"isbnservice.wso"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FullBookInformation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// 1. статус 200\r",
+							"pm.test(\"1. Запит успішний (200 OK)\", () => { pm.response.to.have.status(200); });\r",
+							"\r",
+							"// 2. Час відповіді\r",
+							"pm.test(\"2. Відповідь швидка\", () => { pm.expect(pm.response.responseTime).to.be.below(2000); });\r",
+							"\r",
+							"// 3. Перевірка формату XML\r",
+							"pm.test(\"3. Формат відповіді XML\", () => { pm.response.to.be.withBody; });\r",
+							"\r",
+							"// 4. Назви книги\r",
+							"pm.test(\"4. У відповіді є назва книги (sTitle)\", () => { pm.expect(pm.response.text()).to.include(\"sTitle\"); });\r",
+							"\r",
+							"// 5. Перевірка автора\r",
+							"pm.test(\"5. У відповіді є автор (sAuthor)\", () => { pm.expect(pm.response.text()).to.include(\"sAuthor\"); });\r",
+							"\r",
+							"// 6. Перевірка заголовка сервера\r",
+							"pm.test(\"6. Є заголовок Server\", () => { pm.response.to.have.header(\"Server\"); });\r",
+							"\r",
+							"// 7. Перевірка мови кодування\r",
+							"pm.test(\"7. Кодування utf-8\", () => { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"utf-8\"); });\r",
+							"\r",
+							"// 8.(містить багато даних)\r",
+							"pm.test(\"8. Докладна відповідь\", () => { pm.expect(pm.response.text().length).to.be.above(200); });\r",
+							"\r",
+							"// 9. Перевірка на відсутність помилок\r",
+							"pm.test(\"9. Помилок SOAP не знайдено\", () => { pm.expect(pm.response.text()).to.not.include(\"Fault\"); });\r",
+							"\r",
+							"// 10. Перевірка структури XML\r",
+							"pm.test(\"10. Присутній тег Body\", () => { pm.expect(pm.response.text()).to.include(\"soap:Body\"); });"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml; charset=utf-8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n  <soap:Body>\r\n    <FullBookInformation xmlns=\"http://webservices.daehosting.com/ISBN\">\r\n      <sISBN>0747532699</sISBN>\r\n    </FullBookInformation>\r\n  </soap:Body>\r\n</soap:Envelope>",
+					"options": {
+						"raw": {
+							"language": "xml"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://webservices.daehosting.com/services/isbnservice.wso",
+					"protocol": "http",
+					"host": [
+						"webservices",
+						"daehosting",
+						"com"
+					],
+					"path": [
+						"services",
+						"isbnservice.wso"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
